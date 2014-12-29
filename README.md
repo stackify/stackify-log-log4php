@@ -1,4 +1,4 @@
-stackify-log-monolog
+stackify-log-log4php
 ================
 
 Apache log4php appender for sending log messages and exceptions to Stackify.
