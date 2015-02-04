@@ -36,8 +36,6 @@ Once the appender is configured, add it to your root logger definition.
 
 ExecTransport does not require a Stackify agent to be installed because it sends data directly to Stackify services. It collects log entries in a single batch, calls curl using the ```exec``` function, and sends it to the background immediately [```exec('curl ... &')```]. This will affect the performance of your application minimally, but it requires permissions to call ```exec``` inside the PHP script and it may cause silent data loss in the event of any network issues. This transport method does not work on Windows. To configure ExecTransport you need to pass the environment name and API key (license key):
 
-XML Configuration
-
 ```xml
 <appender name="stackifyAppender" class="\Stackify\Log\Log4php\Appender">
     <param name="appName" value="application_name" />
@@ -65,8 +63,6 @@ XML Configuration
 
 CurlTransport does not require a Stackify agent to be installed and it also sends data directly to Stackify services. It collects log entries in a single batch and sends data using native [PHP cURL](http://php.net/manual/en/book.curl.php) functions. This way is a blocking one, so it should not be used on production environments. To configure CurlTransport you need to pass environment name and API key (license key):
 
-XML Configuration
-
 ```xml
 <appender name="stackifyAppender" class="\Stackify\Log\Log4php\Appender">
     <param name="appName" value="application_name" />
@@ -87,8 +83,6 @@ XML Configuration
 ### AgentTransport
 
 AgentTransport does not require additional configuration in your PHP code because all data is passed to the [Stackify agent](https://stackify.screenstepslive.com/s/3095/m/7787/l/119709-installation-for-linux). The agent must be installed on the same machine. Local TCP socket on port 10515 is used, so performance of your application is affected minimally.
-
-XML Configuration
 
 ```xml
 <appender name="stackifyAppender" class="\Stackify\Log\Log4php\Appender">
