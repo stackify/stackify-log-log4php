@@ -5,61 +5,102 @@ Apache log4php appender for sending log messages and exceptions to Stackify.
 Apache log4php >= 2.2.0 is supported.
 
 Errors and Logs Overview:
+
 http://docs.stackify.com/m/7787/l/189767
 
 Sign Up for a Trial:
+
 http://www.stackify.com/sign-up/
 
 ## Installation
+
 Install the latest version with `composer require stackify/log4php`
 
 Or add dependency to `composer.json` file:
 ```json
-    "stackify/log4php": "~1.0",
+"stackify/log4php": "~1.0",
 ```
 
-By default handler requires [Stackify agent](https://stackify.screenstepslive.com/s/3095/m/7787/l/119709-installation-for-linux) to be running. There are other ways to send data to Stackify, read about pros and cons in [transports](#transport) section.
+There are three different transport options that can be configured to send data to Stackify.  Below will show how to implement the different transport options.
 
-## Basic usage
-Using XML-configuration:
+Once the appender is configured, add it to your root logger definition.
+
 ```xml
-<configuration xmlns="http://logging.apache.org/log4php/">
-    <appender name="stackifyAppender" class="\Stackify\Log\Log4php\Appender">
-        <param name="appName" value="application_name" />
-    </appender>
-    <root>
-        <level value="TRACE" />
-        <appender_ref ref="stackifyAppender" />
-    </root>
-</configuration>
-```
-```php
-Logger::configure('config.xml');
-$logger = Logger::getLogger('logger_name');
-$logger->debug('log4php debug');
+<root>
+    ...
+    <appender_ref ref="stackifyAppender" />
+</root>
 ```
 
-Using PHP-configuration:
-```php
-$config = array(
-    'rootLogger' => array(
-        'appenders' => array('stackify'),
-    ),
-    'appenders' => array(
-        'stackify' => array(
-            'class' => '\Stackify\Log\Log4php\Appender',
-            'params' => array(
-            	'appName' => 'application_name',
-            ),
-        ),
-    ),
-);
-Logger::configure($config);
-$logger = Logger::getLogger('logger_name');
-$logger->warn('warning message');
+### ExecTransport
+
+ExecTransport does not require a Stackify agent to be installed because it sends data directly to Stackify services. It collects log entries in a single batch, calls curl using the ```exec``` function, and sends it to the background immediately [```exec('curl ... &')```]. This will affect the performance of your application minimally, but it requires permissions to call ```exec``` inside the PHP script and it may cause silent data loss in the event of any network issues. This transport method does not work on Windows. To configure ExecTransport you need to pass the environment name and API key (license key):
+
+XML Configuration
+
+```xml
+<appender name="stackifyAppender" class="\Stackify\Log\Log4php\Appender">
+    <param name="appName" value="application_name" />
+    <param name="environmentName" value="environment_name" />
+    <param name="mode" value="exec" />
+    <param name="apiKey" value="api_key" />
+</appender>
 ```
 
-To get more error details pass Exception objects to logger if available:
+#### Optional Configuration
+
+<b>Proxy</b>
+- ExecTransport supports data delivery through proxy. Specify proxy using [libcurl format](http://curl.haxx.se/libcurl/c/CURLOPT_PROXY.html): <[protocol://][user:password@]proxyhost[:port]>
+```xml
+<param name="proxy" value="https://55.88.22.11:3128" />
+```
+
+<b>Curl path</b>
+- It can be useful to specify ```curl``` destination path for ExecTransport. This option is set to 'curl' by default.
+```xml
+<param name="curlPath" value="/usr/bin/curl" />
+```
+
+### CurlTransport
+
+CurlTransport does not require a Stackify agent to be installed and it also sends data directly to Stackify services. It collects log entries in a single batch and sends data using native [PHP cURL](http://php.net/manual/en/book.curl.php) functions. This way is a blocking one, so it should not be used on production environments. To configure CurlTransport you need to pass environment name and API key (license key):
+
+XML Configuration
+
+```xml
+<appender name="stackifyAppender" class="\Stackify\Log\Log4php\Appender">
+    <param name="appName" value="application_name" />
+    <param name="environmentName" value="environment_name" />
+    <param name="mode" value="curl" />
+    <param name="apiKey" value="api_key" />
+</appender>
+```
+
+#### Optional Configuration
+
+<b>Proxy</b>
+- CurlTransport supports data delivery through proxy. Specify proxy using [libcurl format](http://curl.haxx.se/libcurl/c/CURLOPT_PROXY.html): <[protocol://][user:password@]proxyhost[:port]>
+```xml
+<param name="proxy" value="https://55.88.22.11:3128" />
+```
+
+### AgentTransport
+
+AgentTransport does not require additional configuration in your PHP code because all data is passed to the [Stackify agent](https://stackify.screenstepslive.com/s/3095/m/7787/l/119709-installation-for-linux). The agent must be installed on the same machine. Local TCP socket on port 10515 is used, so performance of your application is affected minimally.
+
+XML Configuration
+
+```xml
+<appender name="stackifyAppender" class="\Stackify\Log\Log4php\Appender">
+    <param name="appName" value="application_name" />
+</appender>
+```
+
+You will need to enable the TCP listener by checking the "PHP App Logs (Agent Log Collector)" in the server settings page in Stackify. See [Log Collectors Page](http://docs.stackify.com/m/7787/l/302705-log-collectors) for more details.
+
+## Notes
+
+To get more error details pass Exception objects to the logger if available:
 ```php
 try {
     $db->connect();
@@ -68,48 +109,10 @@ catch (DbException $ex) {
 }
 ```
 
-## <a name="transport"></a>Transport options
-Handler supports three ways to deliver data to Stackify:
-
-- <b>AgentTransport</b> is used by default and it does not require additional configuration on PHP side. All data is be passed to [Stackify agent](https://stackify.screenstepslive.com/s/3095/m/7787/l/119709-installation-for-linux), which must be installed on the same machine. Local TCP socket is used, so performance of your application is affected minimally.
-- <b>ExecTransport</b> does not require Stackify agent to be installed, because it sends data directly to Stackify services. It collects log entries in a single batch, calls curl using ```exec``` function and sends it to background immediately [```exec('curl ... &')```]. This way influences performance of your application minimally, but it requires permissions to call ```exec``` inside PHP script and it may cause silent data loss in case of network issues. This transport does not work on Windows. To configure ExecTransport you need to pass environment name and API key (license key):
-
-    ```xml
-    <appender name="stackifyAppender" class="\Stackify\Log\Log4php\Appender">
-        <param name="appName" value="application_name" />
-        <param name="environmentName" value="environment_name" />
-        <param name="mode" value="exec" />
-        <param name="apiKey" value="api_key" />
-    </appender>
-    ```
-- <b>CurlTransport</b> does not require Stackify agent to be installed, it also sends data directly to Stackify services. It collects log entries in a single batch and sends data using native [PHP cURL](http://php.net/manual/en/book.curl.php) functions. This way is a blocking one, so it should not be used on production environments. To configure CurlTransport you need to pass environment name and API key (license key):
-
-    ```xml
-    <appender name="stackifyAppender" class="\Stackify\Log\Log4php\Appender">
-        <param name="appName" value="application_name" />
-        <param name="environmentName" value="environment_name" />
-        <param name="mode" value="curl" />
-        <param name="apiKey" value="api_key" />
-    </appender>
-    ```
-
-## Configuration
-#### Proxy
-ExecTransport and CurlTransport support data delivery through proxy. Specify proxy using [libcurl format](http://curl.haxx.se/libcurl/c/CURLOPT_PROXY.html): <[protocol://][user:password@]proxyhost[:port]>
-```xml
-<param name="proxy" value="https://55.88.22.11:3128" />
-```
-
-#### Curl path
-It can be useful to specify ```curl``` destination path for ExecTransport. This option is set to 'curl' by default.
-```xml
-<param name="curlPath" value="/usr/bin/curl" />
-```
-
 ## Troubleshooting
 If transport does not work, try looking into ```vendor\stackify\logger\src\Stackify\debug\log.log``` file (if it is available for writing). Errors are also written to global PHP [error_log](http://php.net/manual/en/errorfunc.configuration.php#ini.error-log).
 Note that ExecTransport does not produce any errors at all, but you can switch it to debug mode:
-```xml
+```php
 <param name="debug" value="1" />
 ```
 
