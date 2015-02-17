@@ -2,6 +2,7 @@
 
 namespace Stackify\Log\Log4php;
 
+use Stackify\Utils\TypeConverter;
 use Stackify\Log\Entities\LogEntryInterface;
 
 final class LogEntry implements LogEntryInterface
@@ -19,8 +20,15 @@ final class LogEntry implements LogEntryInterface
 
     public function getContext()
     {
-        // is not supported by log4php
-        return null;
+        $context = array();
+        foreach (\LoggerMDC::getMap() as $mdcKey => $mdcValue) {
+            $context[$mdcKey] = TypeConverter::stringify($mdcValue);
+        }
+        $ndc = \LoggerNDC::get();
+        if (!empty($ndc)) {
+            $context['NDC'] = $ndc;
+        }
+        return empty($context) ? null : $context;
     }
 
     public function getException()
