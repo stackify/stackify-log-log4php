@@ -107,7 +107,7 @@ catch (DbException $ex) {
 }
 ```
 
-All data added to the MDC (Mapped Diagnostic Context) or NDC (Nested Diagnostic Context) will automatically be captured and attached to your log message. This information will be available as JSON data and will be searchable within Stackify.
+All data added to the [MDC](https://logging.apache.org/log4php/apidocs/class-LoggerMDC.html) or [NDC](https://logging.apache.org/log4php/apidocs/class-LoggerNDC.html) will automatically be captured and attached to your log message. This information will be available as JSON data and will be searchable within Stackify.
 
 ## Troubleshooting
 If transport does not work, try looking into ```vendor\stackify\logger\src\Stackify\debug\log.log``` file (if it is available for writing). Errors are also written to global PHP [error_log](http://php.net/manual/en/errorfunc.configuration.php#ini.error-log).
