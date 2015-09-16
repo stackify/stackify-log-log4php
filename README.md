@@ -1,6 +1,8 @@
 stackify-log-log4php
 ================
 
+[![PHP version](https://badge.fury.io/ph/stackify%2Flog4php.svg)](http://badge.fury.io/ph/stackify%2Flog4php)
+
 Apache log4php appender for sending log messages and exceptions to Stackify.
 Apache log4php >= 2.2.0 is supported.
 
