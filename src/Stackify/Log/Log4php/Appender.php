@@ -24,6 +24,7 @@ class Appender extends \LoggerAppender
     private $proxy;
     private $curlPath;
     private $debug;
+    private $logServerVariables = false;
 
     protected $requiresLayout = false;
 
@@ -35,6 +36,11 @@ class Appender extends \LoggerAppender
     public function setAppName($appName)
     {
         $this->appName = $this->validateNotEmpty('AppName', $appName);
+    }
+
+    public function setLogServerVariables($logServerVariables)
+    {
+        $this->logServerVariables = $logServerVariables;
     }
 
     public function setEnvironmentName($environmentName)
@@ -75,7 +81,7 @@ class Appender extends \LoggerAppender
     protected function append(\LoggerLoggingEvent $event)
     {
         if (null === $this->transport) {
-            $messageBuilder = new MessageBuilder('Stackify log4php v.1.0', $this->appName, $this->environmentName);
+            $messageBuilder = new MessageBuilder('Stackify log4php v.1.1', $this->appName, $this->environmentName, $this->logServerVariables);
             $this->transport = $this->createTransport();
             $this->transport->setMessageBuilder($messageBuilder);
         }

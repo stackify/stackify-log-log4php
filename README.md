@@ -24,7 +24,7 @@ Install the latest version with `composer require stackify/log4php`
 
 Or add dependency to `composer.json` file:
 ```json
-"stackify/log4php": "~1.0",
+"stackify/log4php": "~1.0"
 ```
 
 There are three different transport options that can be configured to send data to Stackify.  Below will show how to implement the different transport options.
@@ -53,13 +53,13 @@ ExecTransport does not require a Stackify agent to be installed because it sends
 
 #### Optional Configuration
 
-<b>Proxy</b>
+**Proxy**
 - ExecTransport supports data delivery through proxy. Specify proxy using [libcurl format](http://curl.haxx.se/libcurl/c/CURLOPT_PROXY.html): <[protocol://][user:password@]proxyhost[:port]>
 ```xml
 <param name="proxy" value="https://55.88.22.11:3128" />
 ```
 
-<b>Curl path</b>
+**Curl path**
 - It can be useful to specify ```curl``` destination path for ExecTransport. This option is set to 'curl' by default.
 ```xml
 <param name="curlPath" value="/usr/bin/curl" />
@@ -80,10 +80,18 @@ CurlTransport does not require a Stackify agent to be installed and it also send
 
 #### Optional Configuration
 
-<b>Proxy</b>
+**Proxy**
 - CurlTransport supports data delivery through proxy. Specify proxy using [libcurl format](http://curl.haxx.se/libcurl/c/CURLOPT_PROXY.html): <[protocol://][user:password@]proxyhost[:port]>
 ```xml
 <param name="proxy" value="https://55.88.22.11:3128" />
+```
+
+**Log Server Environment Variables**
+- Server environment variables can be added to error log message metadata. **Note:** This will log all 
+system environment variables; do not enable if sensitive information such as passwords or keys are stored this way.
+
+ ```xml
+<param name="logServerVariables" value="true" />
 ```
 
 ### AgentTransport
@@ -93,10 +101,21 @@ AgentTransport does not require additional configuration in your PHP code becaus
 ```xml
 <appender name="stackifyAppender" class="\Stackify\Log\Log4php\Appender">
     <param name="appName" value="application_name" />
+    <param name="environmentName" value="environment_name" />
 </appender>
 ```
 
 You will need to enable the TCP listener by checking the "PHP App Logs (Agent Log Collector)" in the server settings page in Stackify. See [Log Collectors Page](http://docs.stackify.com/m/7787/l/302705-log-collectors) for more details.
+
+#### Optional Configuration
+
+**Log Server Environment Variables**
+- Server environment variables can be added to error log message metadata. **Note:** This will log all 
+system environment variables; do not enable if sensitive information such as passwords or keys are stored this way.
+
+ ```xml
+<param name="logServerVariables" value="true" />
+```
 
 ## Notes
 
@@ -120,7 +139,7 @@ Note that ExecTransport does not produce any errors at all, but you can switch i
 
 ## License
 
-Copyright 2015 Stackify, LLC.
+Copyright 2018 Stackify, LLC.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
