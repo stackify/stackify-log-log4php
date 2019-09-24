@@ -6,7 +6,7 @@
     "type": "library",
     "license": "Apache-2.0",
     "require": {
-        "stackify/logger": "~1.1",
+        "stackify/logger": "~1.2",
         "apache/log4php": "~2.2"
     },
     "autoload": {

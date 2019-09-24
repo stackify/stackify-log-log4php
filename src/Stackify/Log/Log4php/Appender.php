@@ -9,6 +9,7 @@ class Appender extends \LoggerAppender
 {
 
     const MODE_AGENT = 'Agent';
+    const MODE_AGENTSOCKET = 'AgentSocket';
     const MODE_CURL = 'Curl';
     const MODE_EXEC = 'Exec';
 
@@ -118,16 +119,17 @@ class Appender extends \LoggerAppender
             'curlPath' => $this->curlPath,
         );
         if (null === $this->mode) {
-            $this->mode = self::MODE_AGENT;
+            $this->mode = self::MODE_AGENTSOCKET;
         }
         $allowed = array(
             self::MODE_AGENT,
+            self::MODE_AGENTSOCKET,
             self::MODE_CURL,
             self::MODE_EXEC,
         );
         if (in_array($this->mode, $allowed)) {
             $className = '\Stackify\Log\Transport\\' . $this->mode . 'Transport';
-            if (self::MODE_AGENT === $this->mode) {
+            if (self::MODE_AGENT === $this->mode || self::MODE_AGENTSOCKET === $this->mode) {
                 return new $className($options);
             }
             return new $className($this->apiKey, $options);
