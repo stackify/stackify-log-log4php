@@ -101,9 +101,9 @@ $config = array(
     'Debug' => true,
     'DebugLogPath' => '/path/to/log.log'
 );
-
 // 1. Converting PHP array to JSON String
 // - String: {"Debug":true,"DebugLogPath":"/path/to/log.log"}
+$jsonString = json_encode($config);
 // 2. XML Encode the JSON String
 //   - ' is replaced with &apos;
 //   - " is replaced with &quot;
@@ -113,8 +113,9 @@ $config = array(
 //   - \n is replaced with &#10; or &#xA;
 //   - \r is replaced with &#13; or &#xD;
 // - Encoded String: {&quot;Debug&quot;:true,&quot;DebugLogPath&quot;:&quot;/path/to/log.log&quot;}
+$xmlEncode = htmlspecialchars($jsonString, ENT_XML1 | ENT_QUOTES, 'UTF-8');
 
-// XML Configuration
+// 3. Add it as a value on XML Configuration
 <param name="config" value="{&quot;Debug&quot;:true,&quot;DebugLogPath&quot;:&quot;/path/to/log.log&quot;}" />
 ```
 
