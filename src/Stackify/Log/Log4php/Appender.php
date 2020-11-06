@@ -89,12 +89,10 @@ class Appender extends \LoggerAppender
     /**
      * Constructor
      *
-     * @param string $name
-     * @param array  $config
+     * @param string $name Appender name
      */
-    public function __construct($name = '', $config = null)
+    public function __construct($name = '')
     {
-        $this->setConfig($config);
         parent::__construct($name);
     }
 
