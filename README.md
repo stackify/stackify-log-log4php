@@ -110,9 +110,11 @@ $jsonString = json_encode($config);
 //   - & is replaced with &amp;
 //   - < is replaced with &lt;
 //   - > is replaced with &gt;
-//   - \n is replaced with &#10; or &#xA;
-//   - \r is replaced with &#13; or &#xD;
 // - Encoded String: {&quot;Debug&quot;:true,&quot;DebugLogPath&quot;:&quot;/path/to/log.log&quot;}
+// - Note: In case the string has new line ("\n") or a carriage return ("\r") character, you still need to escape it
+//   - \n should be replaced with &#10; or &#xA;
+//   - \r should be replaced with &#13; or &#xD;
+// - Reference: https://stackoverflow.com/a/29924176/14542233
 $xmlEncode = htmlspecialchars($jsonString, ENT_XML1 | ENT_QUOTES, 'UTF-8');
 
 // 3. Add it as a value on XML Configuration
