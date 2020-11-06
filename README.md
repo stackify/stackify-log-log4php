@@ -90,6 +90,60 @@ Note that ExecTransport does not produce any errors at all, but you can switch i
 <param name="debug" value="1" />
 ```
 
+## Additional Configuration
+For additional configurations, you can set on the XML or the PHP File Configuration. Reference for the additional options are located on the stackify logger repository [Stackify PHP Logger - Configuration Settings](stackify/stackify-api-php#configuration-settings)
+
+### XML Configuration
+- The string should be a JSON String and HTML Encoded (will improve this eventually.)
+```php
+// Sample PHP Config
+$config = array(
+    'Debug' => true,
+    'DebugLogPath' => '/path/to/log.log'
+);
+// 1. Converting PHP array to JSON String
+// - String: {"Debug":true,"DebugLogPath":"/path/to/log.log"}
+$jsonString = json_encode($config);
+// 2. XML Encode the JSON String
+//   - ' is replaced with &apos;
+//   - " is replaced with &quot;
+//   - & is replaced with &amp;
+//   - < is replaced with &lt;
+//   - > is replaced with &gt;
+// - Encoded String: {&quot;Debug&quot;:true,&quot;DebugLogPath&quot;:&quot;/path/to/log.log&quot;}
+// - Note: In case the string has new line ("\n") or a carriage return ("\r") character, you still need to escape it
+//   - \n should be replaced with &#10; or &#xA;
+//   - \r should be replaced with &#13; or &#xD;
+// - Reference: https://stackoverflow.com/a/29924176/14542233
+$xmlEncode = htmlspecialchars($jsonString, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+
+// 3. Add it as a value on XML Configuration
+<param name="config" value="{&quot;Debug&quot;:true,&quot;DebugLogPath&quot;:&quot;/path/to/log.log&quot;}" />
+```
+
+### PHP Configuration
+- If using the PHP configuration, basically add the `config` attribute on the `params` under the Stackify Appender settings
+```php
+<?php
+return array(
+    'rootLogger' => array(
+        'appenders' => array('stackifyAppender'),
+    ),
+    'appenders' => array(
+        'stackifyAppender' => array(
+            'class' => '\Stackify\Log\Log4php\Appender',
+            'params' => array(
+                'appName' => 'application-name',
+                'environmentName' => 'environment-name',
+                // Additional configuration
+                'config' => array(
+                    'Debug' => true,
+                    'DebugLogPath' => 'logConfig.log'
+                )
+            )
+        )
+```
+
 ## License
 
 Copyright 2019 Stackify, LLC.
