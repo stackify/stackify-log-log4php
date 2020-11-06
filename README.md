@@ -91,7 +91,7 @@ Note that ExecTransport does not produce any errors at all, but you can switch i
 ```
 
 ## Additional Configuration
-For additional configurations, you can set on the XML or the PHP File Configuration. Reference for the additional options are located on the stackify logger repository [Stackify PHP Logger - Configuration Settings](https://github.com/stackify/stackify-api-php#configuration-settings)
+For additional configurations, you can set on the XML or the PHP File Configuration. Reference for the additional options are located on the stackify logger repository [Stackify PHP Logger - Configuration Settings](stackify/stackify-api-php#configuration-settings)
 
 ### XML Configuration
 - The string should be a JSON String and HTML Encoded (will improve this eventually.)
