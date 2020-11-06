@@ -102,10 +102,17 @@ $config = array(
     'DebugLogPath' => '/path/to/log.log'
 );
 
-// Converting PHP array to JSON String
-// String: {"Debug":true,"DebugLogPath":"/path/to/log.log"}
-// HTML Encode the JSON String
-// String: {&quot;Debug&quot;:true,&quot;DebugLogPath&quot;:&quot;/path/to/log.log&quot;}
+// 1. Converting PHP array to JSON String
+// - String: {"Debug":true,"DebugLogPath":"/path/to/log.log"}
+// 2. XML Encode the JSON String
+//   - ' is replaced with &apos;
+//   - " is replaced with &quot;
+//   - & is replaced with &amp;
+//   - < is replaced with &lt;
+//   - > is replaced with &gt;
+//   - \n is replaced with &#10; or &#xA;
+//   - \r is replaced with &#13; or &#xD;
+// - Encoded String: {&quot;Debug&quot;:true,&quot;DebugLogPath&quot;:&quot;/path/to/log.log&quot;}
 
 // XML Configuration
 <param name="config" value="{&quot;Debug&quot;:true,&quot;DebugLogPath&quot;:&quot;/path/to/log.log&quot;}" />
