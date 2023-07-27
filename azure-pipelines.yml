@@ -51,3 +51,4 @@ steps:
     version: 'AZ-Devops-Build-$(build.buildNumber)'
     filepath: 'stackify-log-log4php.zip'
     maximumWaitTime: '360'
+    createsandbox: true
