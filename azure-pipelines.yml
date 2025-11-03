@@ -32,22 +32,22 @@ steps:
 
 - script: composer install --no-interaction --prefer-dist
   displayName: 'composer install'
-- task: CmdLine@2
-  inputs:
-    script: 'curl -sSL https://www.sourceclear.com/install | sh'
-- task: CmdLine@2
-  inputs:
-    script: 'srcclr scan .'
-  env:
-    SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)
-- task: CmdLine@2
-  inputs:
-    script: 'zip -r stackify-log-log4php.zip src/ composer.json'
-- task: Veracode@3
-  inputs:
-    ConnectionDetailsSelection: 'Endpoint'
-    AnalysisService: 'Veracode'
-    veracodeAppProfile: 'Retrace PHP log4php library'
-    version: 'AZ-Devops-Build-$(build.buildNumber)'
-    filepath: 'stackify-log-log4php.zip'
-    maximumWaitTime: '360'
+#- task: CmdLine@2
+#  inputs:
+#    script: 'curl -sSL https://www.sourceclear.com/install | sh'
+#- task: CmdLine@2
+#  inputs:
+#    script: 'srcclr scan .'
+#  env:
+#    SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)
+#- task: CmdLine@2
+#  inputs:
+#    script: 'zip -r stackify-log-log4php.zip src/ composer.json'
+# - task: Veracode@3
+#   inputs:
+#     ConnectionDetailsSelection: 'Endpoint'
+#     AnalysisService: 'Veracode'
+#     veracodeAppProfile: 'Retrace PHP log4php library'
+#     version: 'AZ-Devops-Build-$(build.buildNumber)'
+#     filepath: 'stackify-log-log4php.zip'
+#     maximumWaitTime: '360'
